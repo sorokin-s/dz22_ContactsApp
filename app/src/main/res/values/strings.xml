@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">dz22_ContactsApp</string>
+    <string name="contacts">Контакты\n</string>
+    <string name="add_contact">Добавить  контакт</string>
+    <string name="dis_contacts">Посмотреть контакты</string>
+    <string name="add_contacts_text1">Добавить новый контакт</string>
+    <string name="close">Закрыть</string>
+    <string name="exit_app">Выход</string>
+    <string name="btn_cancel">Отмена\n</string>
+    <string name="btn_add">Добавить</string>
+    <string name="ref">Update</string>
+    <string name="Name">Введите имя</string>
+    <string name="e_mail">Введите e-mail</string>
+    <string name="input_phone">Введите телефон</string>
+</resources>
