@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -19,10 +20,12 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Person> listPersons = new ArrayList<>();  // список контактов
     ArrayAdapter<String> arrayAdapter;
     ListView listContacts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         listContacts = findViewById(R.id.listContacts);
         listPersons.add(new Person("Firstname1 Lastname1","accaunt@gmail.com","+7 999 9999990")); // добавляем контакты для примера
         listPersons.add(new Person("Firstname2 Lastname2","accaunt@gmail.com","+7 999 9999999"));
@@ -36,33 +39,31 @@ public class MainActivity extends AppCompatActivity {
                         .toCollection(ArrayList::new)); // приводим к списку строк
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,list); // адаптер связывает список строк с ListView
         listContacts.setAdapter(arrayAdapter); // устанавливаем для списка адаптер
-
-        Bundle arguments = getIntent().getExtras();
-        if( arguments != null){
-            var _list = arguments.getStringArrayList("list");// получаем список из др активити
-            arrayAdapter.clear();   // Очищаем список
-            assert _list != null;
-            arrayAdapter.addAll(_list);  // Заполняем, с новым элементом если добавили
-        }
+        arrayAdapter.notifyDataSetChanged();
         Intent intent = new Intent(this,MainActivityContacts.class);
-        btnExit.setOnClickListener(new View.OnClickListener() {    // закрыть приложение
-            @Override
-            public void onClick(View v) {
-
+        btnExit.setOnClickListener(v ->  {    // закрыть приложение
                 finish();
-            }
+        });
+
+        // кнопка вызова активити для добавления нового контакта
+        btnAddContact.setOnClickListener(v -> {
+            intent.putExtra("list",listPersons);  // передаём список между активити
+            //startActivity(intent);
+            startActivityForResult(intent,100); // не нашёл замены пока
 
         });
 
-        btnAddContact.setOnClickListener(new View.OnClickListener() {  // кнопка вызова активити для добавления нового контакта
-            @Override
-            public void onClick(View v) {
-                intent.putExtra("list",list);  // передаём список между активити
-                startActivity(intent);
-                finish();
-            }
-        });
-
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 100 && resultCode == 101 && data != null)
+        {
+            listPersons = (ArrayList<Person>)data.getSerializableExtra("list");// получаем список из др активити, ?
+            arrayAdapter.clear();   // Очищаем список
+            assert listPersons != null;
+            listPersons.forEach(l->arrayAdapter.addAll(l.toString()));// Заполняем, с новым элементом если добавили
+        }
     }
 
 }
